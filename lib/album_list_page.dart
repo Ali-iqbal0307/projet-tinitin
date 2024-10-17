@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'album_detail_page.dart';
 import 'models/album.dart';
-import 'album_detail_page.dart'; 
-
 
 class AlbumListPage extends StatelessWidget {
   final List<Album> albums;
@@ -20,12 +19,11 @@ class AlbumListPage extends StatelessWidget {
         itemBuilder: (context, index) {
           final album = albums[index];
           return ListTile(
-            leading: Image.asset(album.image), 
+            leading: Image.asset(album.image),
             title: Text(album.title),
             subtitle: Text('Album n°${album.numero}'),
             trailing: const Icon(Icons.arrow_forward),
             onTap: () {
-             
               Navigator.push(
                 context,
                 MaterialPageRoute(

@@ -18,7 +18,7 @@ class Album {
     required this.image,
     required this.resume,
     required this.gps,
-    required this.location, required int ,
+    required this.location,
   });
 
   @override
