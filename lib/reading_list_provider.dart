@@ -12,10 +12,20 @@ class ReadingListProvider extends ChangeNotifier {
 
   void toggleAlbum(Album album) {
     if (isInReadingList(album)) {
-      _readingList.remove(album);
+      removeFromReadingList(album);
     } else {
-      _readingList.add(album);
+      addToReadingList(album); 
     }
-    notifyListeners();
+  }
+
+  void removeFromReadingList(Album album) {
+    _readingList.remove(album);
+    notifyListeners();  
+  }
+
+  void addToReadingList(Album album) {
+    _readingList.add(album);
+    notifyListeners();  
   }
 }
+
