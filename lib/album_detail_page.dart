@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'models/album.dart';
-import 'reading_list_provider.dart'; 
+import 'reading_list_provider.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AlbumDetailPage extends StatelessWidget {
   final Album album;
@@ -10,9 +13,7 @@ class AlbumDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Vérifie si l'album est dans la liste de lecture
-    final isInReadingList =
-        context.watch<ReadingListProvider>().isInReadingList(album);
+    final isInReadingList = context.watch<ReadingListProvider>().isInReadingList(album);
 
     return Scaffold(
       appBar: AppBar(
@@ -57,15 +58,39 @@ class AlbumDetailPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
+            // --- Section pour afficher la carte ---
+            Container(
+              height: 300,
+              padding: const EdgeInsets.all(16),
+              child: FlutterMap(
+                options: MapOptions(
+                  initialCenter: LatLng(album.gps.latitude, album.gps.longitude), // Centre la carte sur les coordonnées de l'album
+                  initialZoom: 9.0,
+                ),
+                children: [
+                  TileLayer(
+                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // Source de la carte
+                    userAgentPackageName: 'com.example.app',
+                  ),
+                  RichAttributionWidget(
+                    attributions: [
+                      TextSourceAttribution(
+                        'OpenStreetMap contributors',
+                        onTap: () => launchUrl(Uri.parse('https://openstreetmap.org/copyright')), // Lien vers les droits d'attribution
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  context.read<ReadingListProvider>().toggleAlbum(
-                      album); // Utilise toggleAlbum pour ajouter/retirer
+                  context.read<ReadingListProvider>().toggleAlbum(album);
                 },
                 style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   backgroundColor: isInReadingList
                       ? const Color.fromARGB(255, 243, 61, 61)
                       : Colors.white,
@@ -76,9 +101,7 @@ class AlbumDetailPage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      isInReadingList
-                          ? Icons.bookmark_remove
-                          : Icons.bookmark_add,
+                      isInReadingList ? Icons.bookmark_remove : Icons.bookmark_add,
                       color: isInReadingList
                           ? Colors.white
                           : const Color.fromARGB(255, 243, 61, 61),
@@ -101,4 +124,6 @@ class AlbumDetailPage extends StatelessWidget {
       ),
     );
   }
+  
+  launchUrl(Uri parse) {}
 }
